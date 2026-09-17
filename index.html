@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        This is the top of the page.
+        It tells the browser what kind of file this is.
+        The browser needs the .html file ending to show the page correctly.
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phonics Fun</title>
+
+    <!--
+        Import a clear font for easier reading.
+        Lexend is used because it is easier for many children to read.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /*
+            Simple color palette for calm, high-contrast, easy-to-read design.
+            Large font and lots of space make it easier for dyslexic children.
+        */
+        :root {
+            --page-bg: #f7fbff;
+            --card-bg: #ffffff;
+            --card-border: #bfe3ff;
+            --button-blue: #3b82f6;
+            --button-green: #22c55e;
+            --button-yellow: #fbbf24;
+            --button-purple: #a78bfa;
+            --text-dark: #1f2937;
+            --text-light: #475569;
+            --good: #15803d;
+            --bad: #b45309;
+            --soft: #ecfeff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(180deg, #fdfbf7 0%, #eef9ff 100%);
+            color: var(--text-dark);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .app {
+            width: min(100%, 760px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid var(--card-border);
+            border-radius: 28px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .subtitle {
+            margin: 12px 0 0;
+            font-size: 1.15rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .score {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #78350f;
+        }
+
+        .card {
+            background: var(--soft);
+            border: 3px dashed #8ec5ff;
+            border-radius: 24px;
+            padding: 28px 18px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .emoji {
+            font-size: clamp(4rem, 10vw, 7rem);
+            margin-bottom: 10px;
+        }
+
+        .word {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .prompt {
+            font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: var(--text-dark);
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(80px, 1fr));
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .answer-btn {
+            border: none;
+            border-radius: 18px;
+            padding: 18px 14px;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            min-height: 78px;
+            transition: transform 0.15s ease, filter 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.12);
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.04);
+        }
+
+        .answer-btn:active {
+            transform: translateY(2px);
+        }
+
+        .answer-btn.blue { background: var(--button-blue); }
+        .answer-btn.green { background: var(--button-green); }
+        .answer-btn.yellow { background: var(--button-yellow); color: #1f2937; }
+        .answer-btn.purple { background: var(--button-purple); }
+
+        .listen-btn {
+            margin-top: 18px;
+            border: 2px solid #93c5fd;
+            background: white;
+            color: var(--text-dark);
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .feedback {
+            min-height: 34px;
+            margin-top: 18px;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .feedback.good { color: var(--good); }
+        .feedback.bad { color: var(--bad); }
+
+        @media (max-width: 520px) {
+            .app {
+                padding: 18px 14px;
+            }
+
+            .answer-grid {
+                grid-template-columns: repeat(2, minmax(80px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--
+        This is the whole app.
+        It is simple: a title, score, question, answer buttons, and feedback.
+    -->
+    <main class="app" aria-label="Phonics learning game">
+        <div class="top-bar">
+            <div>
+                <h1>Phonics Fun</h1>
+                <p class="subtitle">Look, listen, and pick the first letter.</p>
+            </div>
+            <div class="score">Score: <span id="score">0</span></div>
+        </div>
+
+        <section class="card" aria-live="polite">
+            <div id="emoji" class="emoji" aria-label="Picture for the word">🍎</div>
+            <div id="word" class="word">Apple</div>
+            <div class="prompt">What letter does this word start with?</div>
+            <div id="answers" class="answer-grid" aria-label="Answer choices"></div>
+            <button id="listen-btn" class="listen-btn" type="button" aria-label="Read the word aloud">🔊 Listen</button>
+            <div id="feedback" class="feedback" aria-live="polite">Ready!</div>
+        </section>
+    </main>
+
+    <script>
+        /*
+            This is the real phonics question bank.
+            Each question has a word, an emoji picture, and the correct first letter.
+            The game shows one question at a time and checks the answer.
+        */
+        const questions = [
+            { word: 'Apple', emoji: '🍎', answer: 'A' },
+            { word: 'Ball', emoji: '⚽', answer: 'B' },
+            { word: 'Cat', emoji: '🐱', answer: 'C' },
+            { word: 'Dog', emoji: '🐶', answer: 'D' },
+            { word: 'Fish', emoji: '🐟', answer: 'F' },
+            { word: 'Hat', emoji: '👒', answer: 'H' },
+            { word: 'Moon', emoji: '🌙', answer: 'M' },
+            { word: 'Sun', emoji: '☀️', answer: 'S' }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        /*
+            This function shows one word and the answer buttons.
+            It also fills the buttons with wrong answers so the child can choose.
+        */
+        function renderQuestion() {
+            const current = questions[currentIndex];
+            const emoji = document.getElementById('emoji');
+            const word = document.getElementById('word');
+            const answers = document.getElementById('answers');
+            const feedback = document.getElementById('feedback');
+
+            emoji.textContent = current.emoji;
+            emoji.setAttribute('aria-label', 'Picture for ' + current.word);
+            word.textContent = current.word;
+            feedback.textContent = 'Ready!';
+            feedback.className = 'feedback';
+
+            const letters = [current.answer];
+            while (letters.length < 4) {
+                const randomLetter = questions[Math.floor(Math.random() * questions.length)].answer;
+                if (!letters.includes(randomLetter)) {
+                    letters.push(randomLetter);
+                }
+            }
+
+            // Shuffle the letters so the correct answer is not always in the same place.
+            for (let i = letters.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [letters[i], letters[j]] = [letters[j], letters[i]];
+            }
+
+            answers.innerHTML = '';
+
+            const colors = ['blue', 'green', 'yellow', 'purple'];
+            letters.forEach((letter, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'answer-btn ' + colors[index % colors.length];
+                button.textContent = letter;
+                button.setAttribute('aria-label', 'Choose letter ' + letter);
+                button.addEventListener('click', () => checkAnswer(letter));
+                answers.appendChild(button);
+            });
+        }
+
+        /*
+            This function checks if the chosen answer is correct.
+            It updates the score and shows feedback.
+        */
+        function checkAnswer(selectedLetter) {
+            const current = questions[currentIndex];
+            const feedback = document.getElementById('feedback');
+
+            if (selectedLetter === current.answer) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+                feedback.textContent = '✅ Correct! ' + current.word + ' starts with ' + current.answer;
+                feedback.className = 'feedback good';
+                speakText('Correct! ' + current.word + ' starts with ' + current.answer);
+            } else {
+                feedback.textContent = 'Try again! The correct letter is ' + current.answer;
+                feedback.className = 'feedback bad';
+                speakText('Try again. The correct letter is ' + current.answer);
+                return;
+            }
+
+            // Move to the next question after a short pause.
+            setTimeout(() => {
+                currentIndex += 1;
+                if (currentIndex >= questions.length) {
+                    currentIndex = 0;
+                }
+                renderQuestion();
+            }, 1200);
+        }
+
+        /*
+            speakText() reads the text aloud using the browser voice.
+            This helps children who learn better by hearing.
+        */
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        /*
+            This button lets the child hear the word spoken.
+        */
+        document.getElementById('listen-btn').addEventListener('click', () => {
+            const current = questions[currentIndex];
+            speakText(current.word + ' starts with ' + current.answer);
+        });
+
+        renderQuestion();
+    </script>
+</body>
+</html>

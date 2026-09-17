@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        This is the very top of the page.
+        It tells the browser the file is an HTML page.
+        It also helps phones and tablets display it correctly.
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Phonics Duo - Dyslexia-Friendly Learning</title>
+
+    <!--
+        These lines add a cleaner font.
+        Lexend is easier to read for many children and adults.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!--
+        This loads Tailwind CSS.
+        Tailwind helps us make the page look nice and easier to use.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--
+        This custom setup changes the default Tailwind styling.
+        We keep the font simple and readable.
+    -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        lexend: ['Lexend', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!--
+        This is the CSS styling section.
+        It controls the page background, text size, spacing, and card look.
+        We keep it simple and calm for better reading.
+    -->
+    <style>
+        /*
+            Body is the whole page.
+            We use a warm background and larger text to reduce strain.
+        */
+        body {
+            background: linear-gradient(180deg, #FDFBF7 0%, #EAF6FF 100%);
+            color: #1F2937;
+            font-family: 'Lexend', sans-serif;
+            font-size: 20px;
+            line-height: 1.7;
+        }
+
+        /*
+            A soft card is the large white box that holds the lesson.
+            It makes the content look clean and grouped together.
+        */
+        .soft-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(4px);
+        }
+
+        /*
+            path-node is the big circle button in the learning map.
+            It has a little lift effect when the mouse hovers over it.
+        */
+        .path-node {
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .path-node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .path-node:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        /*
+            This makes keyboard focus easier to see.
+            It helps children and users with accessibility needs.
+        */
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 4px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
+
+    <!--
+        This is the page header.
+        It shows the app name and the score badges.
+        It stays at the top of the page.
+    -->
+    <header class="w-full max-w-2xl flex justify-between items-center bg-white border-2 border-sky-200 px-6 py-3 rounded-2xl shadow-sm mb-6">
+        <div class="flex items-center gap-2">
+            <span class="text-3xl" aria-label="Phonics icon">🔤</span>
+            <span class="font-extrabold text-xl text-sky-900">PhonicsDuo</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <!--
+                Streak badge shows the daily learning streak.
+                It is a small reward for continuing to learn.
+            -->
+            <div class="flex items-center gap-1 font-bold text-sky-700 bg-sky-50 px-3 py-1.5 rounded-xl border border-sky-200">
+                🔥 <span id="streak-count">1</span> Streak
+            </div>
+
+            <!--
+                XP badge shows points earned.
+                It makes the activity feel like a small game.
+            -->
+            <div class="flex items-center gap-1 font-bold text-yellow-600 bg-yellow-50 px-3 py-1.5 rounded-xl border border-yellow-200">
+                ⭐ <span id="xp-count">0</span> XP
+            </div>
+        </div>
+    </header>
+
+    <!--
+        This is the first screen.
+        It shows the learning path map.
+        The child sees a level button and can click to begin.
+    -->
+    <div id="path-view" class="w-full max-w-2xl flex flex-col items-center my-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold mb-2">English Phonics Adventure</h1>
+            <p class="text-lg text-slate-600">Learn letter sounds easily! / انگریزی آوازیں سیکھیں</p>
+        </div>
+
+        <!--
+            This is the path layout.
+            Level 1 is unlocked and Level 2 is locked.
+            This keeps the interface simple and easy to follow.
+        -->
+        <div class="flex flex-col items-center gap-6 w-full py-4">
+            <!--
+                The first level button is the start button.
+                It is large, colorful, and easy to tap.
+            -->
+            <button onclick="startLesson()" class="path-node bg-sky-400 hover:bg-sky-500 text-sky-950 w-24 h-24 rounded-full flex flex-col items-center justify-center border-4 border-sky-600 font-extrabold text-2xl cursor-pointer" aria-label="Start level one phonics lesson">
+                <span aria-hidden="true">🍎</span>
+                <span class="text-xs tracking-wider">LEVEL 1</span>
+            </button>
+            <p class="text-sm font-bold text-sky-800 bg-sky-100 px-4 py-1 rounded-full shadow-xs">Beginning Sounds (حروف کی آوازیں)</p>
+
+            <!--
+                This line separates the levels visually.
+                It shows the path is going from one stage to another.
+            -->
+            <div class="w-2 h-8 bg-sky-300 rounded-full" aria-hidden="true"></div>
+
+            <!--
+                This second level is locked.
+                It tells the child there is more to learn later.
+            -->
+            <div class="opacity-60 flex flex-col items-center cursor-not-allowed" aria-disabled="true">
+                <div class="bg-gray-200 text-gray-500 w-20 h-20 rounded-full flex flex-col items-center justify-center border-4 border-gray-300 font-extrabold text-xl" aria-hidden="true">
+                    <span>📝</span>
+                </div>
+                <span class="text-xs font-bold text-gray-500 mt-2">LEVEL 2: CVC Words (Locked)</span>
+            </div>
+        </div>
+    </div>
+
+    <!--
+        This is the lesson screen.
+        It is hidden at first, then shown when the child starts a lesson.
+    -->
+    <div id="lesson-view" class="w-full max-w-2xl soft-card border-4 border-sky-200 shadow-xl rounded-[32px] p-6 sm:p-8 my-auto hidden flex flex-col items-center text-center">
+        
+        <!--
+            The lesson header has a back button and the current lesson name.
+            It helps the child feel in control.
+        -->
+        <div class="w-full flex justify-between items-center mb-6">
+            <button onclick="returnToPath()" class="text-slate-500 hover:text-slate-800 font-bold text-sm bg-gray-100 px-4 py-2 rounded-xl transition cursor-pointer" aria-label="Go back to the learning path">
+                ← Exit / واپس
+            </button>
+            <div class="text-sky-900 font-bold bg-sky-100 px-4 py-1.5 rounded-full text-sm">
+                Level 1: Phonics Match
+            </div>
+        </div>
+
+        <!--
+            This area contains the question and the sound button.
+            The sound button helps children hear the sounds aloud.
+        -->
+        <div class="mb-4 w-full flex flex-col items-center">
+            <div class="flex items-center justify-center gap-3 mb-1">
+                <h2 id="instruction-text" class="text-2xl sm:text-3xl font-extrabold">What letter does this start with?</h2>
+                <button onclick="speakInstruction()" class="bg-sky-500 hover:bg-sky-600 text-white p-3 rounded-full shadow transition transform hover:scale-105 cursor-pointer" aria-label="Read the instruction aloud">
+                    🔊
+                </button>
+            </div>
+            <p class="text-sky-800 font-semibold text-base" dir="rtl">یہ چیز کس حرف سے شروع ہوتی ہے؟</p>
+        </div>
+
+        <!--
+            This is the visual question stage.
+            A picture and word are shown so the child can connect sound with meaning.
+        -->
+        <div class="w-full min-h-[150px] bg-sky-50 rounded-2xl border-2 border-dashed border-sky-300 flex flex-col items-center justify-center p-4 shadow-inner mb-6">
+            <div id="target-emoji" class="text-6xl sm:text-7xl mb-2 animate-bounce" aria-live="polite">🍎</div>
+            <div id="target-word" class="text-2xl font-extrabold tracking-wide text-sky-950 uppercase">Apple</div>
+        </div>
+
+        <!--
+            This container will hold the answer buttons.
+            We create them with JavaScript so the game can change each round.
+        -->
+        <div id="choices-container" class="grid grid-cols-3 gap-4 w-full mb-4" aria-label="Answer choices"></div>
+
+        <!--
+            This message gives feedback after an answer.
+            It says either correct or try again.
+        -->
+        <div id="feedback-message" class="text-xl font-bold h-10 transition-all" aria-live="polite"></div>
+    </div>
+
+    <!--
+        Footer text at the bottom of the page.
+        It adds a friendly ending and shows local connection.
+    -->
+    <footer class="text-base text-slate-500 py-4 text-center">
+        Made with 💛 for Islamabad & Rawalpindi learners
+    </footer>
+
+    <!--
+        This is the game logic.
+        It stores words, chooses random questions, shows options, and checks answers.
+    -->
+    <script>
+        //
+        // This array holds the words and sounds used in the lesson.
+        // These are simple, common words with clear letter starts.
+        // Each item has: a letter, a word, and an emoji picture.
+        //
+        const phonicsData = [
+            { letter: 'A', word: 'Apple', emoji: '🍎' },
+            { letter: 'B', word: 'Ball', emoji: '⚽' },
+            { letter: 'C', word: 'Cat', emoji: '🐱' },
+            { letter: 'D', word: 'Dog', emoji: '🐶' },
+            { letter: 'F', word: 'Fish', emoji: '🐟' },
+            { letter: 'H', word: 'Hat', emoji: '👒' },
+            { letter: 'M', word: 'Moon', emoji: '🌙' },
+            { letter: 'S', word: 'Sun', emoji: '☀️' }
+        ];
+
+        //
+        // These are the global variables used by the game.
+        // currentItem holds the active question.
+        // xp holds the score points.
+        //
+        let currentItem = {};
+        let xp = 0;
+
+        //
+        // startLesson() shows the lesson screen and starts the first round.
+        //
+        function startLesson() {
+            document.getElementById('path-view').classList.add('hidden');
+            document.getElementById('lesson-view').classList.remove('hidden');
+            startNewRound();
+        }
+
+        //
+        // returnToPath() goes back to the level map screen.
+        //
+        function returnToPath() {
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('path-view').classList.remove('hidden');
+        }
+
+        //
+        // speakText() uses the browser voice to read words aloud.
+        // It is important for children who learn better by hearing.
+        //
+        function speakText(text, lang = 'en-US') {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8; // Slower speed helps with reading and processing.
+                utterance.pitch = 1.1;
+                utterance.lang = lang;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        //
+        // speakInstruction() reads the question aloud.
+        // This makes the page more accessible.
+        //
+        function speakInstruction() {
+            speakText(`What letter does ${currentItem.word} start with? Tap the correct letter.`);
+        }
+
+        //
+        // startNewRound() picks a new random word and shows answer buttons.
+        //
+        function startNewRound() {
+            document.getElementById('feedback-message').textContent = '';
+
+            // Pick one random item from the word bank.
+            currentItem = phonicsData[Math.floor(Math.random() * phonicsData.length)];
+
+            // Show the picture and the word for the child to look at.
+            document.getElementById('target-emoji').textContent = currentItem.emoji;
+            document.getElementById('target-word').textContent = currentItem.word;
+
+            // Build 3 answer options.
+            // One is correct, and two are wrong letters.
+            let choices = [currentItem.letter];
+            while (choices.length < 3) {
+                let randomItem = phonicsData[Math.floor(Math.random() * phonicsData.length)];
+                if (!choices.includes(randomItem.letter)) {
+                    choices.push(randomItem.letter);
+                }
+            }
+
+            // Mix the order so the correct answer is not always in the same place.
+            choices.sort(() => Math.random() - 0.5);
+
+            // These colors make the buttons easy to tell apart.
+            const btnColors = [
+                'bg-sky-500 hover:bg-sky-600 border-sky-700 text-white',
+                'bg-emerald-500 hover:bg-emerald-600 border-emerald-700 text-white',
+                'bg-amber-500 hover:bg-amber-600 border-amber-700 text-white'
+            ];
+
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+
+            // Create each answer button one by one.
+            choices.forEach((ltr, index) => {
+                const btn = document.createElement('button');
+                btn.textContent = ltr;
+                const color = btnColors[index % btnColors.length];
+                btn.className = `${color} text-3xl font-extrabold py-4 rounded-2xl border-b-6 shadow-md transition transform active:translate-y-1 cursor-pointer`;
+                btn.onclick = () => handleAnswer(ltr, btn);
+                choicesContainer.appendChild(btn);
+            });
+
+            // Read the question out loud for accessibility.
+            speakInstruction();
+        }
+
+        //
+        // handleAnswer() checks the selected letter.
+        // If it is correct, it adds XP and moves to the next round.
+        // If it is wrong, it shows a try again message.
+        //
+        function handleAnswer(selectedLetter, buttonElement) {
+            const feedback = document.getElementById('feedback-message');
+
+            if (selectedLetter === currentItem.letter) {
+                xp += 10;
+                document.getElementById('xp-count').textContent = xp;
+                feedback.textContent = `🎉 Correct! ${currentItem.word} starts with ${currentItem.letter}!`;
+                feedback.className = 'text-xl font-bold h-10 text-emerald-700';
+                speakText(`Correct! ${currentItem.word} starts with ${currentItem.letter}`);
+
+                // Stop all buttons so the child cannot spam taps.
+                const buttons = document.querySelectorAll('#choices-container button');
+                buttons.forEach(b => b.disabled = true);
+
+                // After a short pause, start a new question.
+                setTimeout(() => {
+                    startNewRound();
+                }, 1800);
+            } else {
+                feedback.textContent = '🔄 Try again! دوبارہ کوشش کریں';
+                feedback.className = 'text-xl font-bold h-10 text-amber-700';
+                speakText('Try again');
+
+                // Flash the wrong answer so the child knows it was not correct.
+                buttonElement.classList.add('animate-pulse', 'bg-red-500');
+                setTimeout(() => {
+                    buttonElement.classList.remove('animate-pulse', 'bg-red-500');
+                }, 400);
+            }
+        }
+    </script>
+</body>
+</html>
+
+</html>
